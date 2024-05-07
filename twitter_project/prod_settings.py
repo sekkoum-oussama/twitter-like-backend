@@ -18,12 +18,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY") #"@g_8$7gvs_0$qh*40u$ue4#)m_yrsve2^ih&qm3+ps*h(u9&cb"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS")
+ALLOWED_HOSTS = ['oussamasekkoum.pythonanywhere.com',]
 
 # Application definition
 
@@ -36,14 +36,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     # 3rd-party
+    'corsheaders',
     'rest_framework',
-    'rest_framework_swagger',
     'rest_framework.authtoken',
     'allauth',
     'allauth.account',
     'dj_rest_auth',
     'dj_rest_auth.registration',
-    'debug_toolbar',
     # custom
     'users',
     'tweets',
@@ -52,14 +51,16 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'twitter_project.urls'
@@ -89,11 +90,10 @@ WSGI_APPLICATION = 'twitter_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'twitter_db',
-        'USER': os.environ.get("DATABASE_USERNAME"),
-        'PASSWORD': os.environ.get("DATABASE_PASSWORD"),
-        'HOST': os.environ.get("DATABASE_HOST"),
-        'PORT': os.environ.get("DATABASE_HOST"),
+        'NAME': 'oussamasekkoum$twitter_db',
+        'USER':  os.getenv("DATABASE_USERNAME"),#'oussamasekkoum',
+        'PASSWORD': os.getenv("DATABASE_PASSWORD"),#'polatalamdar2001',
+        'HOST': os.getenv("DATABASE_HOST"),#'oussamasekkoum.mysql.pythonanywhere-services.com',
     }
 }
 
@@ -136,6 +136,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 SITE_ID = 1
 
@@ -146,24 +147,29 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-# static 
-
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-
 # REST FRAMEWORK SETTINGS
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         #'rest_framework.authentication.SessionAuthentication',
-        # 'rest_framework.authentication.TokenAuthentication',
+        #'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
-        
+
     ],
 }
 
-REST_USE_JWT = True
+REST_AUTH = {
+    "USE_JWT": True,
+    "JWT_AUTH_HTTPONLY" : False,
+    'USER_DETAILS_SERIALIZER' : "users.serializers.UserDetailSerializer",
+    'PASSWORD_RESET_SERIALIZER' : 'users.serializers.CustomPasswordResetSerializer',
+    'LOGIN_SERIALIZER' : 'users.serializers.CustomLoginSerializer',
+    'PASSWORD_RESET_CONFIRM_SERIALIZER' : 'users.serializers.CustomPasswordResetConfirmSerializer'
+}
+
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 AUTHENTICATION_BACKENDS = [
@@ -176,12 +182,13 @@ AUTHENTICATION_BACKENDS = [
 
 # Email Settings
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
+EMAIL_USE_SSL = False
 EMAIL_HOST_USER = 'oussamasekkoum.lycee27@gmail.com'
-EMAIL_HOST_PASSWORD = 'polatalamdar2005'
+EMAIL_HOST_PASSWORD = 'yhnl reqn oshy acre'
 
 
 # Allauth Setting
@@ -193,8 +200,9 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 LOGIN_URL = 'http://localhost:8000/users/login'
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
+
 REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER' : 'users.serializers.UserDetailSerializer',
+    'USER_DETAILS_SERIALIZER' : "users.serializers.UserDetailSerializer2",
     'PASSWORD_RESET_SERIALIZER' : 'users.serializers.CustomPasswordResetSerializer',
     'LOGIN_SERIALIZER' : 'users.serializers.CustomLoginSerializer',
     'PASSWORD_RESET_CONFIRM_SERIALIZER' : 'users.serializers.CustomPasswordResetConfirmSerializer'

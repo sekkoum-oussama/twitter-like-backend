@@ -25,12 +25,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "10.0.2.2", "192.168.1.9"]
 
-INTERNAL_IPS = [
-    "127.0.0.1",
-    'localhost',
-
-]
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -169,8 +163,15 @@ REST_FRAMEWORK = {
     ],
 }
 
-REST_USE_JWT = True
+#REST_USE_JWT = True
 
+REST_AUTH = {
+    "USE_JWT" : True,
+    'USER_DETAILS_SERIALIZER' : 'users.serializers.UserDetailSerializer',
+    'PASSWORD_RESET_SERIALIZER' : 'users.serializers.CustomPasswordResetSerializer',
+    'LOGIN_SERIALIZER' : 'users.serializers.CustomLoginSerializer',
+    'PASSWORD_RESET_CONFIRM_SERIALIZER' : 'users.serializers.CustomPasswordResetConfirmSerializer'
+}
 
 AUTHENTICATION_BACKENDS = [
     # allauth specific authentication methods, such as login by e-mail
@@ -200,10 +201,7 @@ LOGIN_URL = 'http://localhost:8000/users/login'
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
 REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER' : 'users.serializers.UserDetailSerializer',
-    'PASSWORD_RESET_SERIALIZER' : 'users.serializers.CustomPasswordResetSerializer',
-    'LOGIN_SERIALIZER' : 'users.serializers.CustomLoginSerializer',
-    'PASSWORD_RESET_CONFIRM_SERIALIZER' : 'users.serializers.CustomPasswordResetConfirmSerializer'
+    
 }
 
 OLD_PASSWORD_FIELD_ENABLED = True
